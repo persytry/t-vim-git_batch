@@ -6,6 +6,7 @@ batch operators of git
 """
 import subprocess
 import os
+import argparse
 
 
 def isInsideWorkTree(path: str = None) -> bool:
@@ -63,7 +64,9 @@ def walkRepoNeedPush(path: str = None) -> str:
 
 
 def commitAll(comment: str, path: str = None) -> None:
-    assert len(comment) > 0
+    if comment is None or len(comment) == 0:
+        print('must input comment to commit')
+        return
     for repo in walkRepoDiff(path):
         res = subprocess.run(['git', 'commit', '-m', f'"{comment}"'], check=False, timeout=60, text=True, shell=False, cwd=repo, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print(repo)
@@ -127,3 +130,25 @@ def _walkRepo(path: str) -> str:
             yield dir
             continue
         yield from _walkRepo(dir)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description='')
+    parser.add_argument('--path', type=str, default=None)
+    sub_parser = parser.add_subparsers(help='sub-commands')
+    sub_parser.add_parser('repo').set_defaults(func=lambda a: printRepo(a.path))
+    sub_parser.add_parser('diff').set_defaults(func=lambda a: printRepoDiff(a.path))
+    sub_parser.add_parser('needPush').set_defaults(func=lambda a: printRepoNeedPush(a.path))
+    sub = sub_parser.add_parser('commit')
+    sub.add_argument('-m', default=None)
+    sub.set_defaults(func=lambda a: commitAll(a.m, a.path))
+    sub_parser.add_parser('pull').set_defaults(func=lambda a: pullAll(a.path))
+    sub_parser.add_parser('push').set_defaults(func=lambda a: pushAll(a.path))
+    args = parser.parse_args()
+    fn = getattr(args, 'func', None)
+    if fn is not None:
+        fn(args)
+
+
+if __name__ == '__main__':
+    main()
