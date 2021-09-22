@@ -65,17 +65,41 @@ def walkRepoNeedPush(path: str = None) -> str:
 def commitAll(comment: str, path: str = None) -> None:
     assert len(comment) > 0
     for repo in walkRepoDiff(path):
-        subprocess.run(['git', 'commit', '-m', f'"{comment}"'], check=False, timeout=60, text=True, shell=False, cwd=repo, universal_newlines=True)
+        res = subprocess.run(['git', 'commit', '-m', f'"{comment}"'], check=False, timeout=60, text=True, shell=False, cwd=repo, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(repo)
+        print(res.stdout)
+        print(res.stderr)
 
 
 def pullAll(path: str = None) -> None:
     for repo in walkRepo(path):
-        subprocess.run(['git', 'pull'], check=False, timeout=60, text=True, shell=False, cwd=repo, universal_newlines=True)
+        res = subprocess.run(['git', 'pull'], check=False, timeout=60, text=True, shell=False, cwd=repo, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(repo)
+        print(res.stdout)
+        print(res.stderr)
 
 
 def pushAll(path: str = None) -> None:
     for repo in walkRepoNeedPush(path):
-        subprocess.run(['git', 'push'], check=False, timeout=60, text=True, shell=False, cwd=repo, universal_newlines=True)
+        res = subprocess.run(['git', 'push'], check=False, timeout=60, text=True, shell=False, cwd=repo, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(repo)
+        print(res.stdout)
+        print(res.stderr)
+
+
+def printRepo(path: str = None) -> None:
+    for repo in walkRepo(path):
+        print(repo)
+
+
+def printRepoDiff(path: str = None) -> None:
+    for repo in walkRepoDiff(path):
+        print(repo)
+
+
+def printRepoNeedPush(path: str = None) -> None:
+    for repo in walkRepoNeedPush(path):
+        print(repo)
 
 
 def _isInsideWorkTree(path: str) -> bool:

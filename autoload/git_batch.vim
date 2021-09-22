@@ -25,13 +25,13 @@ function! s:InitVar(var, value)
     endif
 endfunction
 
-function! git_batch#py(fn, p1, p2) abort
+function! git_batch#py(fn, ...) abort
     let l:s = "py3 git_batch." . a:fn . "("
-    if a:p1
-        let l:s = l:s . "'" . a:p1 . "'"
+    if a:0 >= 1
+        let l:s = l:s . "'" . a:1 . "'"
     endif
-    if a:p2
-        let l:s = l:s . ",'" . a:p2 . "'"
+    if a:0 >= 2
+        let l:s = l:s . ",'" . a:2 . "'"
     endif
     let l:s = l:s . ")"
     exec l:s
