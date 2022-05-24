@@ -16,6 +16,8 @@ This is a simple little project, it's easy, so don't need any configure from now
 
 ## installation
 
+Deprecated, instead of [dev/t/py/git_batch.py](https://github.com/persytry/lang-py-setup-dev/tree/master/t/py/git_batch.py).
+
 Using [plug.vim](https://github.com/junegunn/vim-plug):
 ```vim
 Plug 'persytry/t-vim-git_batch', { 'dir': '~/.git_batch' }
